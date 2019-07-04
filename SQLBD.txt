@@ -1,0 +1,80 @@
+﻿create table usuario (
+id integer not null AUTO_INCREMENT PRIMARY KEY, 
+Nombre varchar(20), 
+Apellidos varchar(20), 
+GrupoSanguineo varchar(2), 
+Sexo varchar(15), 
+Edad varchar(2)
+);
+
+create table presion (
+id integer not null, 
+sistolica varchar(6),
+diastolica varchar(6), 
+observacion varchar(30), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table glucosa (
+id integer not null, 
+resultado varchar(3), 
+observacion varchar(30), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table estadocorporal (
+id integer not null, 
+cintura varchar(5),
+peso varchar(6),
+imc varchar(5),
+edad_metabolica varchar(2),
+masa_osea varchar(5),
+grasa_visceral varchar(5),
+agua varchar(3), 
+observacion varchar(30), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table densiometria (
+id integer not null, 
+resultado varchar(5),
+rango varchar(15),
+observacion varchar(30), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table examenoftalmico (
+id integer not null, 
+od varchar(7),
+ad varchar(7),
+ol varchar(7),
+adl varchar(7), 
+observacion varchar(30), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table espirometria (
+id integer not null, 
+volumen_corriente varchar(7), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+create table esquemavacunacion (
+id integer not null, 
+vacuna varchar(15), 
+enfermedad_proteje varchar(15), 
+fecha_dosis varchar(15),
+frecuencia varchar(15),
+dosis varchar(15), 
+FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
+ALTER TABLE `usuario` ADD `Email` VARCHAR(20) NOT NULL AFTER `Nombre`;
+
+
+
+
+
+
+
+
