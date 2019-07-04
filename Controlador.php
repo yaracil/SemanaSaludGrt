@@ -1,11 +1,13 @@
 <?php
 
-if(isset($_POST['guardar'])){
+if (isset($_POST['guardar'])) {
     //conexion base
+
     include('includes/ConexionBD.php');
     //recuperar datos
+    
         //Usuario
-        $id=(int)$_POST['IdUsuario'];
+        $id = (int) $_POST['IdUsuario'];
         
         //Presion
         $sistolica=$_POST['sistolica'];
@@ -43,21 +45,12 @@ if(isset($_POST['guardar'])){
         
         //Esquema de Vacunación
         $validar=true;
-        $incremento=1;
+        $incremento=$_POST['Numero'];
         $EsquemaVacunas = array();
-        while($validar){
-            if($_POST['vacuna_'.$incremento.'']!=""){
-                $EsquemaVacunas[] = array(
-                    "Vacuna" => $_POST['vacuna_'.$incremento.''],
-                    "Enfermedad" => $_POST['enfermedad_'.$incremento.''],
-                    "Fecha" => $_POST['fecha_'.$incremento.''],
-                    "Frecuencia" => $_POST['frecuencia_'.$incremento.''],
-                    "Dosis" => $_POST['dosis_'.$incremento.'']
-                );
-                $incremento++;
-            }else{
-                $validar=false;
-            }
+        $i=0;
+        for($i=0;$i<$incremento;$i++){
+                $EsquemaVacunas[$i] = array($_POST['vacuna_'.($i+1).''],$_POST['enfermedad_'.($i+1).''],
+                    $_POST['fecha_'.($i+1).''],$_POST['frecuencia_'.($i+1).''],$_POST['dosis_'.($i+1).'']);
         }
     
     $validar=false;    
@@ -163,37 +156,45 @@ if(isset($_POST['guardar'])){
     //insertar Esquema de Vacunación
     $validar=false;     
     $vacunas=array();
+    $j=0;
+    $i=0;
         //validar si existe datos
         $query = "SELECT * FROM esquemavacunacion where id=$id";
         $resultado = $con->query($query);
         foreach ($resultado as $rows) {
             $validar=true;
-            $vacunas= array(
-                "id" => $rows['id_vacuna']
-            );
+            $vacunas[$j]=array($rows['id_vacuna']); 
+            $j++;
         }
         if($validar){
             for($i=0;$i<$incremento;$i++){
-                $vacuna=$EsquemaVacunas['Vacuna'];
-                $proteje=$EsquemaVacunas['Enfermedad'];
-                $fecha=$EsquemaVacunas['Fecha'];
-                $frecuencia=$EsquemaVacunas['Frecuencia'];
-                $dosis=$EsquemaVacunas['Dosis'];
+                $vacuna=$EsquemaVacunas[$i][0];
+                $proteje=$EsquemaVacunas[$i][1];
+                $fecha=$EsquemaVacunas[$i][2];
+                $frecuencia=$EsquemaVacunas[$i][3];
+                $dosis=$EsquemaVacunas[$i][4];
                 $count = "UPDATE esquemavacunacion set vacuna='$vacuna', enfermedad_proteje='$proteje',fecha_dosis='$fecha',frecuencia='$frecuencia',dosis='$dosis', where id=$id;";
                 $con->exec($count);
             }
         } else {
-            $count = "INSERT INTO esquemavacunacion (id,vacuna,enfermedad_proteje,fecha_dosis,frecuencia,dosis) VALUES();";
-            $con->exec($count);
+            for($i=0;$i<$incremento;$i++){
+                $vacuna=$EsquemaVacunas[$i][0];
+                $proteje=$EsquemaVacunas[$i][1];
+                $fecha=$EsquemaVacunas[$i][2];
+                $frecuencia=$EsquemaVacunas[$i][3];
+                $dosis=$EsquemaVacunas[$i][4];
+                $count = "INSERT INTO esquemavacunacion (id,vacuna,enfermedad_proteje,fecha_dosis,frecuencia,dosis) VALUES($id,$vacuna,$proteje,$fecha,$frecuencia,$dosis);";
+                $con->exec($count);
+            }
         }    
         
-}
+} else if (isset($_POST['finalizar'])) {
+    
+    header('Location: toPDF.php?usuario="'.$_POST['IdUsuario'].'"');
 
-if(isset($_POST['finalizar'])){
-    
-    
-    
-    
-    
-}
 
+} else if (isset($_POST['salir'])) {
+
+    header("Location: index.html");
+}
+?>
