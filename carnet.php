@@ -60,6 +60,7 @@
         </section>
 
         <!-- Sección #menu-navegacion -->
+        <form action="Controlador.php" method="POST" class="">
         <nav id="menu-navegacion" class="navbar navbar-dark bg-success navbar-expand-md">
 
             <?php
@@ -143,11 +144,11 @@
                         <?php
                         if ($autenticado == "USUARIO_CONOC") {
                                 echo '
-                                        <li class="nav-item mb-1 mb-md-0 mr-md-2"> <input type="submit" value="Salir de la sesión" class="btn btn-danger order-md-1">
+                                        <li class="nav-item mb-1 mb-md-0 mr-md-2"> <input type="submit" name="salir" value="Salir de la sesión" class="btn btn-danger order-md-1">
                                  </li>
-                                        <li class="nav-item mb-1 mb-md-0 mr-md-2"> <input type="submit" value="Guardar" class="btn btn-warning order-md-1">
+                                        <li class="nav-item mb-1 mb-md-0 mr-md-2"> <input type="submit" name="guardar" value="Guardar" class="btn btn-warning order-md-1">
                                 </li>
-                                        <li class="nav-item mb-1 mb-md-0 mr-md-2">  <input type="submit" value="Finalizar" class="btn btn-light order-md-1">
+                                        <li class="nav-item mb-1 mb-md-0 mr-md-2">  <input type="submit" name="finalizar" value="Finalizar" class="btn btn-light order-md-1">
                                             </li>';
                         } else
                             echo '<li class = "nav-item mb-1 mb-md-0 mr-md-2"> <a href = "index.html" class = "btn btn-danger order-md-1">Iniciar sesión</a></li>';
@@ -165,7 +166,7 @@
 
                 <div class="container wrapper p-3 mt-5">
 
-                    <form action="Controlador.php" class="">
+                    <input type="hidden" name="IdUsuario" <?php echo 'value="'.$usuario['id'].'"';?>/>
 
                         <h2 class="mb-4 ml-3">Presión Arterial</h2>
 
@@ -394,13 +395,13 @@
                         <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna()" value="Agregar Vacuna" onclick="addVacuna(this)"/>
 
 
-                    </form>
+
                 </div>
 
 
 
             </div>
-
+        </form>
         </section>
 
 
