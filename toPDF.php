@@ -1,13 +1,14 @@
 <?php
 
-//conexion base
-include('includes/ConexionBD.php');
 // include autoloader
 require_once 'dompdf/autoload.inc.php';
 
 // reference the Dompdf namespace
 use Dompdf\Dompdf;
 use Dompdf\Options;
+
+//conexion base
+include('includes/ConexionBD.php');
 
 if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $usr = $_GET['usuario'];
@@ -19,11 +20,9 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $dompdf = new Dompdf($options);
     $dompdf->set_option('isHtml5ParserEnabled', true);
 
-    $usr = $_GET['usuario'];
-    $QueryPresion = 'SELECT * FROM usuario where id="' . $usr . '"';
-    $usuario = $con->query($QueryPresion);
-
-    echo '¡Hola ' . $usuario['Nombre'] . '!';
+    $q = "SELECT * FROM %s WHERE id='%s'";
+    $usuario = mysqli_fetch_array(mysqli_query($link, sprintf($q, 'usuario', $usr)));
+    $id = $usuario['id'];
 
 //Obtener parametros del carnet 
     $presion;
@@ -35,10 +34,6 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $esquemavacunacion;
 
     $parametros = array('presion', 'glucosa', 'estadocorporal', 'examenoftalmico', 'espirometria', 'densiometria', 'esquemavacunacion');
-    $Query = "SELECT * FROM presion where id='" . $usuario['id'] . "';";
-
-    $q = "SELECT * FROM %s WHERE id='%s'";
-    $id = $usuario['id'];
 
     foreach ($parametros as $parametro) {
         switch ($parametro):
@@ -71,25 +66,10 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $dens_fuera_rango = ($densiometria['rango'] == 'Fuera del rango') ? 'checked = "true' : '';
 
 
+
     $HTML = '
 <!doctype html>
 <html lang="es">
-
-    <head>
-        <title>TARJETAS DE CIRCUITOS INTEGRADOS</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="shortcut icon" type="image/png" href="images/icons8-bios-96.png">
-
-        <!-- Carga del CSS de "Bootstrap" -->
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-
-        <!-- Carga del CSS de "Font Awesome" -->
-        <link rel="stylesheet" href="css/all.css">
-
-        <!-- Carga del CSS personalizado -->
-        <link rel="stylesheet" href="css/estilos.css">
-    </head>
 
     <body>
 
@@ -97,25 +77,24 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
 
         <section class="container-fluid " >
-            <div class="row">
                 <div class="container wrapper p-3 mt-5">
 
                         <h2 class="mb-4 ml-3">Presión Arterial</h2>
 
                         <div class="form-group col-2">
                             <label  for="nombre">Sistólica</label>                            
-                            <label type="number" name="sistolica" id="nombre" class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $presion['sistolica'] . '">
+                            <label font="withe" > ' . $presion['sistolica'] . ' </label>
                         </div>
 
                         <div class="form-group col-2">
                             <label for="Apellido">Diastólica</label>
-                            <input type="number" name="diastolica" id="nombre" class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $presion['diastolica'] . '">
+                            <label  name="diastolica"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" >' . $presion['diastolica'] . '</label>
 
                         </div>
 
                         <div class="form-group col-8 mb-3">
                             <label for="Apellido">Observaciones</label>
-                            <input type="text" name="obspresion" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $presion['observacion'] . '">
+                            <label type="text" name="obspresion"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $presion['observacion'] . '">
                             </br>
                         </div>
 
@@ -125,13 +104,13 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-2">
                             <label  for="nombre">Resultado</label>
-                            <input type="number" name="resglucosa" id="nombre" class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $glucosa['resultado'] . '">
+                            <label  name="resglucosa"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $glucosa['resultado'] . '">
                         </div>
 
 
                         <div class="form-group col-10">
                             <label for="Apellido">Observaciones</label>
-                            <input type="text" name="obsglucosa" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $glucosa['observacion'] . '">
+                            <label type="text" name="obsglucosa"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $glucosa['observacion'] . '">
                             </br>
 
                         </div>
@@ -141,50 +120,50 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-1">
                             <label  for="nombre">Cintura</label>
-                            <input type="number" name="cintura" id="nombre" class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00"value = "' . $estadocorporal['cintura'] . '">
+                            <label  name="cintura"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00"value = "' . $estadocorporal['cintura'] . '">
                         </div>
 
 
                         <div class="form-group col-1">
                             <label for="Apellido">Peso</label>
-                            <input type="number" name="peso" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['peso'] . '">
+                            <label  name="peso"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['peso'] . '">
 
                         </div>
 
                         <div class="form-group col-2">
                             <label for="Apellido">IMC</label>
-                            <input type="number" name="imc" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['imc'] . '">
+                            <label  name="imc"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['imc'] . '">
 
                         </div>
 
                         <div class="form-group col-2">
                             <label for="Apellido">Edad metabólica</label>
-                            <input type="number" name="edadmetabolica" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['edad_metabolica'] . '">
+                            <label  name="edadmetabolica"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['edad_metabolica'] . '">
 
                         </div>
 
                         <div class="form-group col-2">
                             <label for="Apellido">Masa ósea</label>
-                            <input type="number" name="masaosea" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['masa_osea'] . '">
+                            <label  name="masaosea"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['masa_osea'] . '">
 
                         </div>
 
                         <div class="form-group col-2">
                             <label for="Apellido">Grasa Visceral</label>
-                            <input type="number" name="grasavisceral" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['grasa_visceral'] . '">
+                            <label  name="grasavisceral"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['grasa_visceral'] . '">
 
                         </div>
 
                         <div class="form-group col-1">
                             <label for="Apellido">%Agua</label>
-                            <input type="number" name="agua" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['agua'] . '">
+                            <label  name="agua"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['agua'] . '">
 
                         </div>
 
 
                         <div class="form-group col-12 mb-3">
                             <label for="Apellido">Observaciones</label>
-                            <input type="text" name="obsestadocorporal" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $estadocorporal['observacion'] . '">
+                            <label type="text" name="obsestadocorporal"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $estadocorporal['observacion'] . '">
                             </br>
                         </div>
 
@@ -194,24 +173,24 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-2">
                             <label for="Apellido">Resultado</label>
-                            <input type="number" name="resdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $densiometria['resultado'] . '">
+                            <label  name="resdensiometria"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $densiometria['resultado'] . '">
 
                         </div>
 
                         <div class="form-group col-5">
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Normal" ' . $dens_normal .
+                                <label><label type="radio" name="rango" value="Normal" ' . $dens_normal .
             '><p>Normal</p></label>
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Dentro del rango" ' . $dens_dentro_rango . '
+                                <label><label type="radio" name="rango" value="Dentro del rango" ' . $dens_dentro_rango . '
                                               ><p>Dentro del Rango</p></label>
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Fuera del rango" ' . $dens_fuera_rango . '
+                                <label><label type="radio" name="rango" value="Fuera del rango" ' . $dens_fuera_rango . '
                                               ><p>Fuera del Rango</p></label>
                             </div>
 
@@ -222,7 +201,7 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-5 mb-3">
                             <label for="Apellido">Observaciones</label>
-                            <input type="text" name="obsdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $densiometria['observacion'] . '">
+                            <label type="text" name="obsdensiometria"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $densiometria['observacion'] . '">
                             </br>
                         </div>
 
@@ -231,31 +210,31 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-1">
                             <label  for="nombre">OD</label>
-                            <input type="number" name="od" id="nombre" class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['od'] . '">
+                            <label  name="od"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['od'] . '">
                         </div>
 
 
                         <div class="form-group col-1">
                             <label for="Apellido">Ad</label>
-                            <input type="number" name="add" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ad'] . '">
+                            <label  name="add"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ad'] . '">
 
                         </div>
 
                         <div class="form-group col-1">
                             <label for="Apellido">Ol</label>
-                            <input type="number" name="ol" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ol'] . '">
+                            <label  name="ol"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ol'] . '">
 
                         </div>
 
                         <div class="form-group col-1">
                             <label for="Apellido">Ad</label>
-                            <input type="number" name="adl" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['adl'] . '">
+                            <label  name="adl"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['adl'] . '">
 
                         </div>
 
                         <div class="form-group col-8">
                             <label for="Apellido">Observaciones</label>
-                            <input type="text" name="obsexamenoftalmico" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $examenoftalmico['observacion'] . '">
+                            <label type="text" name="obsexamenoftalmico"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $examenoftalmico['observacion'] . '">
                             </br>
                         </div>
 
@@ -271,7 +250,7 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
                         <div class="form-group col-11">
                             <label for="Apellido">Resultado</label>
-                            <input type="number" name="resespirometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $espirometria['volumen_corriente'] . '">
+                            <label>' . $espirometria['volumen_corriente'] . '</label>
                             </br>
                         </div>
 
@@ -279,27 +258,26 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
                         
                         <div class="form-group col-2">
                             <label for="Apellido">Vacuna</label>
-                            <input type="text" name="vacuna_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                            <label type="text" name="vacuna_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                         </div>
                         <div class="form-group col-3">
                             <label for="Apellido">Enfermedad que protege</label>
-                            <input type="text" name="enfermedad_1" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                            <label type="text" name="enfermedad_1"  class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
                         </div>
                         <div class="form-group col-3">
                             <label for="Apellido">Fecha proxima dosis</label>
-                            <input type="text" name="fecha_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                            <label type="text" name="fecha_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                         </div>
                         <div class="form-group col-2">
                             <label for="Apellido">Frencuencia</label>
-                            <input type="text" name="frecuencia_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                            <label type="text" name="frecuencia_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                         </div>
                         <div class="form-group col-2">
                             <label for="Apellido">Dosis</label>
-                            <input type="text" name="dosis_1" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                            <label type="text" name="dosis_1"  class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
                         </div>
                         <div id="vacunas"></div>
-                        <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
-                </div>
+                        <label class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
             </div>
         </section>
 
@@ -317,13 +295,10 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
 
 
     $dompdf->loadHtml($HTML);
-
 // (Optional) Setup the paper size and orientation
-//    $dompdf->setPaper('A4', 'landscape');
-
-// Render the HTML as PDF
+    $dompdf->setPaper('A4', 'landscape');
+    //Render the HTML as PDF
     $dompdf->render();
-
 // Output the generated PDF to Browser
     $dompdf->stream();
 } else

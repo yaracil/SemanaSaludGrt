@@ -267,6 +267,20 @@
                             <input type="number" name="resdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" <?php echo 'value="' . $densiometria['resultado'] . '"'; ?>>
 
                         </div>
+                        <script type="text/javascript">
+                            
+                            function radioButton(obj){
+                                var Boton;
+                                var resultado;
+                                Boton=document.getElementsByName("rango");
+                                for(var i=0;i<Boton.length;i++){
+                                    if(Boton[i].checked)
+                                    resultado=Boton[i].value;
+                                }
+                                document.getElementById("Rango").value=resultado;
+                            }
+                            
+                        </script>
 
                         <div class="form-group col-5">
 
@@ -297,8 +311,8 @@
 
 
                         </div>
-
-
+                        <input type="hidden" name="Rango" id="Rango"/>
+                        
                         <div class="form-group col-5 mb-3">
                             <label for="Apellido">Observaciones</label>
                             <input type="text" name="obsdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" <?php echo 'value="' . $densiometria['observacion'] . '"'; ?>>
@@ -355,10 +369,37 @@
                         </div>
 
                         <h2 class="mb-4 mt-4 ml-3">Esquema de Vacunación</h2>
-
-
+                        <?php
+                            $in=0;
+                            $query = "SELECT * FROM esquemavacunacion where id=$id";
+                            $resultado = $con->query($query);
+                            foreach ($resultado as $rows) {
+                                $in++;
+                                echo '<div class="form-group col-2">
+                                                    <label for="Apellido">Vacuna</label>
+                                                    <input type="text" name="vacuna_'.$in.'" value = "'.$rows['vacuna'].'"  id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                </div>
+                                                <div class="form-group col-3">
+                                                    <label for="Apellido">Enfermedad que protege</label>
+                                                    <input type="text" name="enfermedad_'.$in.'" value = "'.$rows['enfermedad_proteje'].'" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                                                </div>
+                                                    <div class="form-group col-3">
+                                                        <label for="Apellido">Fecha proxima dosis</label>
+                                                        <input type="text" name="fecha_'.$in.'" id="nombre" value = "'.$rows['fecha_dosis'].'" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                </div>
+                                                <div class="form-group col-2">
+                                                    <label for="Apellido">Frencuencia</label>
+                                                    <input type="text" name="frecuencia_'.$in.'" id="nombre" value = "'.$rows['frecuencia'].'" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                </div>
+                                                <div class="form-group col-2">
+                                                    <label for="Apellido">Dosis</label>
+                                                    <input type="text" name="dosis_'.$in.'" id="nombre" value = "'.$rows['dosis'].'" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                                                </div>';
+                            }
+                            echo '<input type="hidden" name="Numero" id="Numero" value="'.($in).'">';
+                        ?>
                         <script type="text/javascript">
-                            a = 1;
+                            a = document.getElementById('Numero').value;
                             function addVacuna(obj){
                             a++;
                             var div = document.createElement('div');
@@ -383,28 +424,10 @@
                                                     <input type="text" name="dosis_' + a + '" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">\n\
                                                 </div>';
                             document.getElementById('vacunas').appendChild(div);
+                            document.getElementById('Numero').value=a;
                             }
                         </script>
-                        <div class="form-group col-2">
-                            <label for="Apellido">Vacuna</label>
-                            <input type="text" name="vacuna_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="Apellido">Enfermedad que protege</label>
-                            <input type="text" name="enfermedad_1" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="Apellido">Fecha proxima dosis</label>
-                            <input type="text" name="fecha_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="Apellido">Frencuencia</label>
-                            <input type="text" name="frecuencia_1" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="Apellido">Dosis</label>
-                            <input type="text" name="dosis_1" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
+                        
                         <div id="vacunas"></div>
                         <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
 
