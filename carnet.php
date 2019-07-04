@@ -265,26 +265,40 @@
                             <input type="number" name="resdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" <?php echo 'value="'.$densiometria['resultado'].'"'; ?>>
 
                         </div>
+                        <script type="text/javascript">
+                            
+                            function radioButton(obj){
+                                var Boton;
+                                var resultado;
+                                Boton=document.getElementsByName("rango");
+                                for(var i=0;i<Boton.length;i++){
+                                    if(Boton[i].checked)
+                                    resultado=Boton[i].value;
+                                }
+                                document.getElementById("Rango").value=resultado;
+                            }
+                            
+                        </script>
 
                         <div class="form-group col-5">
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Normal" <?php if($densiometria['rango']=='Normal'){echo 'checked="true"';} ?>><p>Normal</p></label>
+                                <label><input type="radio" name="rango" value="Normal" onclick="radioButton(this)" <?php if($densiometria['rango']=='Normal'){echo 'checked="true"';} ?>><p>Normal</p></label>
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Dentro del rango" <?php if($densiometria['rango']=='Dentro del rango'){echo 'checked="true"';} ?>><p>Dentro del Rango</p></label>
+                                <label><input type="radio" name="rango" value="Dentro del rango" onclick="radioButton(this)" <?php if($densiometria['rango']=='Dentro del rango'){echo 'checked="true"';} ?>><p>Dentro del Rango</p></label>
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Fuera del rango" <?php if($densiometria['rango']=='Fuera del rango'){echo 'checked="true"';} ?>><p>Fuera del Rango</p></label>
+                                <label><input type="radio" name="rango" value="Fuera del rango" onclick="radioButton(this)" <?php if($densiometria['rango']=='Fuera del rango'){echo 'checked="true"';} ?>><p>Fuera del Rango</p></label>
                             </div>
 
 
 
                         </div>
-
-
+                        <input type="hidden" name="Rango" id="Rango"/>
+                        
                         <div class="form-group col-5 mb-3">
                             <label for="Apellido">Observaciones</label>
                             <input type="text" name="obsdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" <?php echo 'value="'.$densiometria['observacion'].'"'; ?>>

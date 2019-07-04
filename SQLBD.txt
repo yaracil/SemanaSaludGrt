@@ -61,6 +61,7 @@ FOREIGN KEY(id) REFERENCES usuario(id)
 
 create table esquemavacunacion (
 id integer not null, 
+id_vacuna integer not null AUTO_INCREMENT PRIMARY KEY,
 vacuna varchar(15), 
 enfermedad_proteje varchar(15), 
 fecha_dosis varchar(15),
