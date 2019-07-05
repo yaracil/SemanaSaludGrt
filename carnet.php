@@ -285,7 +285,7 @@
                         <div class="form-group col-5">
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Normal" <?php
+                                <label><input type="radio" name="rango" value="Normal" onclick="radioButton(this)" <?php
                                               if ($densiometria['rango'] == 'Normal') {
                                                   echo 'checked="true"';
                                               }
@@ -293,7 +293,7 @@
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Dentro del rango" <?php
+                                <label><input type="radio" name="rango" value="Dentro del rango" onclick="radioButton(this)" <?php
                                               if ($densiometria['rango'] == 'Dentro del rango') {
                                                   echo 'checked="true"';
                                               }
@@ -301,7 +301,7 @@
                             </div>
 
                             <div class="checkbox text-center">
-                                <label><input type="radio" name="rango" value="Fuera del rango" <?php
+                                <label><input type="radio" name="rango" value="Fuera del rango" onclick="radioButton(this)" <?php
                                               if ($densiometria['rango'] == 'Fuera del rango') {
                                                   echo 'checked="true"';
                                               }
@@ -367,7 +367,7 @@
                             <input type="number" name="resespirometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" <?php echo 'value="' . $espirometria['volumen_corriente'] . '"'; ?>>
                             </br>
                         </div>
-
+                        <input type="text" id="Numero">
                         <h2 class="mb-4 mt-4 ml-3">Esquema de Vacunación</h2>
                         <?php
                             $in=0;
@@ -375,7 +375,7 @@
                             $resultado = $con->query($query);
                             foreach ($resultado as $rows) {
                                 $in++;
-                                echo '<div class="form-group col-2">
+                                echo '<div id="Esquema_'.$in.'"><div class="form-group col-2">
                                                     <label for="Apellido">Vacuna</label>
                                                     <input type="text" name="vacuna_'.$in.'" value = "'.$rows['vacuna'].'"  id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>
@@ -394,16 +394,19 @@
                                                 <div class="form-group col-2">
                                                     <label for="Apellido">Dosis</label>
                                                     <input type="text" name="dosis_'.$in.'" id="nombre" value = "'.$rows['dosis'].'" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
-                                                </div>';
+                                                </div></div>';
                             }
-                            echo '<input type="hidden" name="Numero" id="Numero" value="'.($in).'">';
+                            echo "<script type='text/javascript'>document.getElementById('Numero').value=$in;</script>";
                         ?>
+                        
                         <script type="text/javascript">
-                            a = document.getElementById('Numero').value;
-                            function addVacuna(obj){
-                            a++;
-                            var div = document.createElement('div');
-                            div.innerHTML = '<div class="form-group col-2">\n\
+                            
+                            function addVacuna(){
+                                a = document.getElementById('Numero').value;
+                                a++;
+                                var div = document.createElement('div');
+                                div.setAttribute("id","Esquema_"+a+"");
+                                div.innerHTML = '<div class="form-group col-2" >\n\
                                                     <label for="Apellido">Vacuna</label>\n\
                                                     <input type="text" name="vacuna_' + a + '" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">\n\
                                                 </div>\n\
@@ -423,14 +426,21 @@
                                                     <label for="Apellido">Dosis</label>\n\
                                                     <input type="text" name="dosis_' + a + '" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">\n\
                                                 </div>';
-                            document.getElementById('vacunas').appendChild(div);
-                            document.getElementById('Numero').value=a;
+                                document.getElementById('vacunas').appendChild(div);
+                                document.getElementById('Numero').value=a;
+                            }
+                            function removeVacuna(){
+                                a = document.getElementById('Numero').value;
+                                var dive=document.getElementById('Esquema_'+a+'');
+                                document.getElementById('vacunas').removeChild(dive);
+                                a--;
+                                document.getElementById('Numero').value=a;
                             }
                         </script>
                         
                         <div id="vacunas"></div>
-                        <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
-
+                        <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna()"/>
+                        <input class="btn btn-danger order-md-1 mt-5 ml-3"  type="button" name="borrar" id="remove_vacuna" value="Eliminar Ultima Vacuna" onclick="removeVacuna()"/>
 
 
                 </div>

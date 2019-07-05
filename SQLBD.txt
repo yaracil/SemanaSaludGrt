@@ -38,7 +38,7 @@ FOREIGN KEY(id) REFERENCES usuario(id)
 create table densiometria (
 id integer not null, 
 resultado varchar(5),
-rango varchar(15),
+rango varchar(17),
 observacion varchar(30), 
 FOREIGN KEY(id) REFERENCES usuario(id)
 );
