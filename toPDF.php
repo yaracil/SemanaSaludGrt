@@ -1,24 +1,12 @@
 <?php
 
 // include autoloader
-require_once 'dompdf/autoload.inc.php';
-
-// reference the Dompdf namespace
-use Dompdf\Dompdf;
-use Dompdf\Options;
-
-//conexion base
-include('includes/ConexionBD.php');
+require 'vendor/autoload.php';
 
 if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $usr = $_GET['usuario'];
 
-// instantiate and use the dompdf class
-    $dompdf = new Dompdf();
-    $options = new Options();
-    $options->set('defaultFont', 'Courier');
-    $dompdf = new Dompdf($options);
-    $dompdf->set_option('isHtml5ParserEnabled', true);
+    include('includes/ConexionBD.php');
 
     $q = "SELECT * FROM %s WHERE id='%s'";
     $usuario = mysqli_fetch_array(mysqli_query($link, sprintf($q, 'usuario', $usr)));
@@ -64,244 +52,196 @@ if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $dens_normal = ($densiometria['rango'] == 'Normal') ? 'checked = "true' : '';
     $dens_dentro_rango = ($densiometria['rango'] == 'Dentro del rango') ? 'checked = "true' : '';
     $dens_fuera_rango = ($densiometria['rango'] == 'Fuera del rango') ? 'checked = "true' : '';
-
-
-
     $HTML = '
 <!doctype html>
 <html lang="es">
 
+    <head>
+        <title>Grunethal semana de la salud</title>
+        <meta charset="utf-8">
+    </head>
+
     <body>
-
-<!-- Sección #menu-navegacion -->
-
-
-        <section class="container-fluid " >
-                <div class="container wrapper p-3 mt-5">
-
-                        <h2 class="mb-4 ml-3">Presión Arterial</h2>
-
-                        <div class="form-group col-2">
-                            <label  for="nombre">Sistólica</label>                            
-                            <label font="withe" > ' . $presion['sistolica'] . ' </label>
-                        </div>
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">Diastólica</label>
-                            <label  name="diastolica"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" >' . $presion['diastolica'] . '</label>
-
-                        </div>
-
-                        <div class="form-group col-8 mb-3">
-                            <label for="Apellido">Observaciones</label>
-                            <label type="text" name="obspresion"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $presion['observacion'] . '">
-                            </br>
-                        </div>
-
-
-
-                        <h2 class="mb-4 mt-4 ml-3">Glucosa</h2>
-
-                        <div class="form-group col-2">
-                            <label  for="nombre">Resultado</label>
-                            <label  name="resglucosa"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $glucosa['resultado'] . '">
-                        </div>
-
-
-                        <div class="form-group col-10">
-                            <label for="Apellido">Observaciones</label>
-                            <label type="text" name="obsglucosa"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $glucosa['observacion'] . '">
-                            </br>
-
-                        </div>
-
-
-                        <h2 class="mb-4 mt-4 ml-3">Evaluación del estado corporal</h2>
-
-                        <div class="form-group col-1">
-                            <label  for="nombre">Cintura</label>
-                            <label  name="cintura"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00"value = "' . $estadocorporal['cintura'] . '">
-                        </div>
-
-
-                        <div class="form-group col-1">
-                            <label for="Apellido">Peso</label>
-                            <label  name="peso"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['peso'] . '">
-
-                        </div>
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">IMC</label>
-                            <label  name="imc"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['imc'] . '">
-
-                        </div>
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">Edad metabólica</label>
-                            <label  name="edadmetabolica"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['edad_metabolica'] . '">
-
-                        </div>
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">Masa ósea</label>
-                            <label  name="masaosea"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['masa_osea'] . '">
-
-                        </div>
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">Grasa Visceral</label>
-                            <label  name="grasavisceral"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['grasa_visceral'] . '">
-
-                        </div>
-
-                        <div class="form-group col-1">
-                            <label for="Apellido">%Agua</label>
-                            <label  name="agua"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $estadocorporal['agua'] . '">
-
-                        </div>
-
-
-                        <div class="form-group col-12 mb-3">
-                            <label for="Apellido">Observaciones</label>
-                            <label type="text" name="obsestadocorporal"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $estadocorporal['observacion'] . '">
-                            </br>
-                        </div>
-
-
-                        <h2 class="mb-4 mt-4 ml-3">Densiometría ósea</h2>
-
-
-                        <div class="form-group col-2">
-                            <label for="Apellido">Resultado</label>
-                            <label  name="resdensiometria"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $densiometria['resultado'] . '">
-
-                        </div>
-
-                        <div class="form-group col-5">
-
-                            <div class="checkbox text-center">
-                                <label><label type="radio" name="rango" value="Normal" ' . $dens_normal .
-            '><p>Normal</p></label>
-                            </div>
-
-                            <div class="checkbox text-center">
-                                <label><label type="radio" name="rango" value="Dentro del rango" ' . $dens_dentro_rango . '
-                                              ><p>Dentro del Rango</p></label>
-                            </div>
-
-                            <div class="checkbox text-center">
-                                <label><label type="radio" name="rango" value="Fuera del rango" ' . $dens_fuera_rango . '
-                                              ><p>Fuera del Rango</p></label>
-                            </div>
-
-
-
-                        </div>
-
-
-                        <div class="form-group col-5 mb-3">
-                            <label for="Apellido">Observaciones</label>
-                            <label type="text" name="obsdensiometria"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $densiometria['observacion'] . '">
-                            </br>
-                        </div>
-
-
-                        <h2 class="mb-4 mt-4 ml-3">Exámen oftálmico</h2>
-
-                        <div class="form-group col-1">
-                            <label  for="nombre">OD</label>
-                            <label  name="od"  class="form-control d-block form-control-lg text-center " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['od'] . '">
-                        </div>
-
-
-                        <div class="form-group col-1">
-                            <label for="Apellido">Ad</label>
-                            <label  name="add"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ad'] . '">
-
-                        </div>
-
-                        <div class="form-group col-1">
-                            <label for="Apellido">Ol</label>
-                            <label  name="ol"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['ol'] . '">
-
-                        </div>
-
-                        <div class="form-group col-1">
-                            <label for="Apellido">Ad</label>
-                            <label  name="adl"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="00" value = "' . $examenoftalmico['adl'] . '">
-
-                        </div>
-
-                        <div class="form-group col-8">
-                            <label for="Apellido">Observaciones</label>
-                            <label type="text" name="obsexamenoftalmico"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" value = "' . $examenoftalmico['observacion'] . '">
-                            </br>
-                        </div>
-
-
-                        <h2 class="mb-4 mt-4 ml-3">Espirometría (Función pulmonar)</h2>
-
-                        <div class="form-group col-1">
-                            <label  for="nombre">Volúmen corriente (vc)</label>
-
-
-                        </div>
-
-
-                        <div class="form-group col-11">
-                            <label for="Apellido">Resultado</label>
-                            <label>' . $espirometria['volumen_corriente'] . '</label>
-                            </br>
-                        </div>
-
-                        <h2 class="mb-4 mt-4 ml-3">Esquema de Vacunación</h2>
-                        
-                        <div class="form-group col-2">
-                            <label for="Apellido">Vacuna</label>
-                            <label type="text" name="vacuna_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="Apellido">Enfermedad que protege</label>
-                            <label type="text" name="enfermedad_1"  class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="Apellido">Fecha proxima dosis</label>
-                            <label type="text" name="fecha_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="Apellido">Frencuencia</label>
-                            <label type="text" name="frecuencia_1"  class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="Apellido">Dosis</label>
-                            <label type="text" name="dosis_1"  class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
-                        </div>
-                        <div id="vacunas"></div>
-                        <label class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
-            </div>
-        </section>
-
-        <!-- Carga de "Jquery" -->
-        <script src="js/jquery-3.3.1.min.js"></script>
-
-        <!-- Carga de "Popper" -->
-        <script src="js/popper.min.js"></script>
-
-        <!-- Carga de "Bootstrap" -->
-        <script src="js/bootstrap.min.js"></script>
+        <!-- Contenedor Central -->
+
+        <div id="container" style="width:900px; height:auto; margin: 50px auto 0 auto; background: #E6E6E6; font-family:Arial; padding: 30px; ">
+
+
+            <table width="901" border="0">
+                <tbody>
+                    <tr>
+                        <td width="370"><img src="images/salud_logo.png" width="200" alt=""/></td>
+                        <td width="236">Fecha: '.date('d/m/Y', time()).'</td>
+                        <td style="text-align: right" width="281"><img src="images/logo_grt.png" width="100" alt="" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 align="center" >Estimado ' . $usuario['Nombre'] . ', tu expediente clínico Grünenthal es el siguiente:</h3>
+
+            <table width="900" border="0" style="font-family: Arial;  text-align:center;" >
+                <tbody>
+                    <tr>
+                        <td colspan="3" bgcolor="#7FCE4C" style="font-size:20px;"><strong>Presión Arterial</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6">
+                        <td width="158" >Sistólica</td>
+                        <td width="175" >Diastólica</td>
+                        <td width="553" >Observaciones</td>
+                    </tr>
+                    <tr >
+                        <td >' . $presion['sistolica'] . '</td>
+                        <td >' . $presion['diastolica'] . '</td>
+                        <td >' . $presion['observacion'] . '</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 40px; text-align:center; ">
+                <tbody>
+                    <tr>
+                        <td colspan="2" bgcolor="#3D965E" style="font-size:20px;"><strong>Glucosa</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6">
+                        <td style="text-align:center;" width="158">Resultado</td>
+
+                        <td  style="text-align:center;" width="553">Observaciones</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">' . $glucosa['resultado'] . '</td>
+                        <td style="text-align:center;">' . $glucosa['observacion'] . '</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 40px; text-align:center;">
+                <tbody>
+                    <tr >
+                        <td colspan="8" bgcolor="#7FCE4C" style="font-size:20px;"><strong>Evaluación del estado corporal</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6" style="font-weight:600;">
+                        <td >Cintura</td>
+                        <td >Peso</td>
+                        <td >IMC</td>
+                        <td >Edad Metabólica</td>
+                        <td >Masa Ósea</td>
+                        <td >Grasa Visceral</td>
+                        <td >% Agua</td>
+                        <td >Observaciones</td>
+                    </tr>
+                    <tr>
+
+      <td>' . $estadocorporal['cintura'] . '</td>
+      <td>' . $estadocorporal['peso'] . '</td>
+      <td>' . $estadocorporal['IMC'] . '</td>
+      <td>' . $estadocorporal['edad_metabolica'] . '</td>
+      <td>' . $estadocorporal['masa_osea'] . '</td>
+      <td>' . $estadocorporal['grasa_viceral'] . '</td>
+      <td>' . $estadocorporal['agua'] . '</td>
+          <td>' . $estadocorporal['observacion'] . '</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Observaciones</strong></td>
+                        <td>x</td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 40px; text-align:center;">
+                <tbody>
+                    <tr>
+                        <td colspan="3" bgcolor="#3D965E" style="font-size:20px;"><strong>Densiometría Óptica</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6">
+                        <td width="127">Resultado</td>
+
+                        <td width="141">Rango</td>
+
+                        <td width="618">Observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>'.$densiometria['resultado'].'</td>
+                        <td>'.$densiometria['rango'].'</td>
+                        <td>'.$densiometria['observacion'].'</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 40px; text-align:center;">
+                <tbody>
+                    <tr >
+                        <td colspan="5" bgcolor="#7FCE4C" style="font-size:20px;"><strong>Exámen oftálmico</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6" style="font-weight:600;">
+                        <td >OD</td>
+                        <td >AD</td>
+                        <td >OL</td>
+                        <td >ADL</td>
+                        <td >Observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>'.$examenoftalmico['od'].'</td>
+                        <td>'.$examenoftalmico['ad'].'</td>
+                        <td>'.$examenoftalmico['ol'].'x</td>
+                        <td>'.$examenoftalmico['adl'].'</td>
+                        <td>'.$examenoftalmico['observacion'].'</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 30px; text-align:center;">
+                <tbody>
+                    <tr>
+                        <td colspan="2" bgcolor="#3D965E" style="font-size:20px;"><strong>Espirometría</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6">
+                        <td width="158"><strong>Volúmen Corriente</strong></td>
+                        <td><strong>Resultado</strong><strong></strong></td>
+                    </tr>
+                    <tr>
+                        <td>(VC)</td>
+                        <td>x</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table width="900" border="0" style="font-family: Arial; margin-top: 30px; ">
+                <tbody>
+                    <tr >
+                        <td colspan="5" bgcolor="#7FCE4C" style="font-size:20px;"><strong>Esquema de Vacunación</strong></td>
+                    </tr>
+                    <tr bgcolor="#ABA7A6" style="font-weight:600;">
+                        <td width="114" >Vacuna</td>
+                        <td width="211" >Enfermedad que protege</td>
+                        <td width="221" >Fecha de próxima dósis</td>
+                        <td width="171" >Frencuencia</td>
+                        <td width="161" >Dósis</td>
+                    </tr>
+                    <tr>
+                        <td>x</td>
+                        <td>x</td>
+                        <td>x</td>
+                        <td>x</td>
+                        <td>x</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
     </body>
-
 </html>';
-
-
-    $dompdf->loadHtml($HTML);
-// (Optional) Setup the paper size and orientation
-    $dompdf->setPaper('A4', 'landscape');
-    //Render the HTML as PDF
-    $dompdf->render();
-// Output the generated PDF to Browser
-    $dompdf->stream();
+    $mpdf = new \Mpdf\Mpdf();
+//    $mpdf->WriteHTML(file_get_contents('pdf.php'));
+    $mpdf->WriteHTML($HTML);
+    $mpdf->Output();
 } else
-    echo '¡Error! Usuario desconocido';
+    header('Location: Controlador.php?mensaje="¡Error! Usuario desconocido"');
 ?>
     

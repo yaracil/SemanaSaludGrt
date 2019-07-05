@@ -61,90 +61,88 @@
 
         <!-- Sección #menu-navegacion -->
         <form action="Controlador.php" method="POST" class="">
-        <nav id="menu-navegacion" class="navbar navbar-dark bg-success navbar-expand-md">
+            <nav id="menu-navegacion" class="navbar navbar-dark bg-success navbar-expand-md">
 
-            <?php
-            //conexion base
-            include('includes/ConexionBD.php');
-            //Verificar autenticacion del usuario
-            $autenticado = "NO_AUT";
-            $usuario;
-            $ValidarUsuario = false;
+                <?php
+                //conexion base
+                include('includes/ConexionBD.php');
+                //Verificar autenticacion del usuario
+                $autenticado = "NO_AUT";
+                $usuario;
 
-            if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
-                $autenticado = "USUARIO_DESC";
-                $usr = $_GET['usuario'];
-                $QueryPresion = "SELECT * FROM usuario";
-                $usuarios = $con->query($QueryPresion);
-                foreach ($usuarios as $row) {
-                    if ($usr == $row['Email']) {
-                        $usuario = $row;
-                        $autenticado = "USUARIO_CONOC";
-                        echo '¡Hola ' . $usuario['Nombre'] . '!';
-                        break;
+                if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
+                    $autenticado = "USUARIO_DESC";
+                    $usr = $_GET['usuario'];
+                    $QueryPresion = "SELECT * FROM usuario";
+                    $usuarios = $con->query($QueryPresion);
+                    foreach ($usuarios as $row) {                  
+                        if ($usr == $row['Email']) {
+                            $usuario = $row;
+                            $autenticado = "USUARIO_CONOC";
+                            echo '¡Hola ' . $usuario['Nombre'] . '!';
+                            break;
+                        }
                     }
-                    $ValidarUsuario = true;
-                }
-                if ($autenticado == "USUARIO_DESC")
-                    echo '¡Error! Usuario desconocido';
-                else {
+                    if ($autenticado == "USUARIO_DESC")
+                        echo '<script> alert("¡Error! Usuario desconocido")</script>';
+                    else {
 
-                    //Obtener parametros del carnet 
-                    $presion;
-                    $glucosa;
-                    $estadocorporal;
-                    $examenoftalmico;
-                    $espirometria;
-                    $densiometria;
-                    $esquemavacunacion;
+                        //Obtener parametros del carnet 
+                        $presion;
+                        $glucosa;
+                        $estadocorporal;
+                        $examenoftalmico;
+                        $espirometria;
+                        $densiometria;
+                        $esquemavacunacion;
 
-                    $parametros = array('presion', 'glucosa', 'estadocorporal', 'examenoftalmico', 'espirometria', 'densiometria', 'esquemavacunacion');
+                        $parametros = array('presion', 'glucosa', 'estadocorporal', 'examenoftalmico', 'espirometria', 'densiometria', 'esquemavacunacion');
 
-                    $q = "SELECT * FROM %s WHERE id='%s'";
-                    $id = $usuario['id'];
+                        $q = "SELECT * FROM %s WHERE id='%s'";
+                        $id = $usuario['id'];
 
-                    foreach ($parametros as $parametro) {
-                        switch ($parametro):
-                            case 'presion':
-                                $presion = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'glucosa':
-                                $glucosa = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'estadocorporal':
-                                $estadocorporal = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'examenoftalmico':
-                                $examenoftalmico = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'espirometria':
-                                $espirometria = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'densiometria':
-                                $densiometria = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                            case 'esquemavacunacion':
-                                $esquemavacunacion = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
-                                break;
-                        endswitch;
-                        //            
+                        foreach ($parametros as $parametro) {
+                            switch ($parametro):
+                                case 'presion':
+                                    $presion = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'glucosa':
+                                    $glucosa = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'estadocorporal':
+                                    $estadocorporal = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'examenoftalmico':
+                                    $examenoftalmico = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'espirometria':
+                                    $espirometria = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'densiometria':
+                                    $densiometria = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                                case 'esquemavacunacion':
+                                    $esquemavacunacion = mysqli_fetch_array(mysqli_query($link, sprintf($q, $parametro, $id)));
+                                    break;
+                            endswitch;
+                            //            
+                        }
                     }
                 }
-            }
-            ?>
+                ?>
 
-            <div class="container">
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#menu-principal"
-                        aria-expanded="false" aria-label="Botón Menú principal">
-                    <span class="boton-menu"></span>
-                </button>
+                <div class="container">
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#menu-principal"
+                            aria-expanded="false" aria-label="Botón Menú principal">
+                        <span class="boton-menu"></span>
+                    </button>
 
 
-                <div class="collapse navbar-collapse" id="menu-principal">
-                    <h3 class="mr-5"> Carnet por tu salud </h3>
-                    <ul class="navbar-nav mt-3 mt-md-0">
-                        <?php
-                        if ($autenticado == "USUARIO_CONOC") {
+                    <div class="collapse navbar-collapse" id="menu-principal">
+                        <h3 class="mr-5"> Carnet por tu salud </h3>
+                        <ul class="navbar-nav mt-3 mt-md-0">
+                            <?php
+                            if ($autenticado == "USUARIO_CONOC") {
                                 echo '
                                         <li class="nav-item mb-1 mb-md-0 mr-md-2"> <input type="submit" name="salir" value="Salir de la sesión" class="btn btn-danger order-md-1">
                                  </li>
@@ -152,23 +150,23 @@
                                 </li>
                                         <li class="nav-item mb-1 mb-md-0 mr-md-2">  <input type="submit" name="finalizar" value="Finalizar" class="btn btn-light order-md-1">
                                             </li>';
-                        } else
-                            echo '<li class = "nav-item mb-1 mb-md-0 mr-md-2"> <a href = "index.html" class = "btn btn-danger order-md-1">Iniciar sesión</a></li>';
-                        ?>
+                            } else
+                                echo '<li class = "nav-item mb-1 mb-md-0 mr-md-2"> <a href = "index.html" class = "btn btn-danger order-md-1">Iniciar sesión</a></li>';
+                            ?>
 
-                    </ul>
+                        </ul>
 
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
 
-        <section class="container-fluid " <?php echo ($autenticado == "USUARIO_CONOC") ? 'visible' : 'hidden'; ?>  >
-            <div class="row">
+            <section class="container-fluid " <?php echo ($autenticado == "USUARIO_CONOC") ? 'visible' : 'hidden'; ?>  >
+                <div class="row">
 
 
-                <div class="container wrapper p-3 mt-5">
+                    <div class="container wrapper p-3 mt-5">
 
-                    <input type="hidden" name="IdUsuario" <?php echo 'value="'.$usuario['id'].'"';?>/>
+                        <input type="hidden" name="IdUsuario" <?php echo 'value="' . $usuario['id'] . '"'; ?>/>
 
                         <h2 class="mb-4 ml-3">Presión Arterial</h2>
 
@@ -268,51 +266,51 @@
 
                         </div>
                         <script type="text/javascript">
-                            
-                            function radioButton(obj){
+
+                            function radioButton(obj) {
                                 var Boton;
                                 var resultado;
-                                Boton=document.getElementsByName("rango");
-                                for(var i=0;i<Boton.length;i++){
-                                    if(Boton[i].checked)
-                                    resultado=Boton[i].value;
+                                Boton = document.getElementsByName("rango");
+                                for (var i = 0; i < Boton.length; i++) {
+                                    if (Boton[i].checked)
+                                        resultado = Boton[i].value;
                                 }
-                                document.getElementById("Rango").value=resultado;
+                                document.getElementById("Rango").value = resultado;
                             }
-                            
+
                         </script>
 
                         <div class="form-group col-5">
 
                             <div class="checkbox text-center">
                                 <label><input type="radio" name="rango" value="Normal" <?php
-                                              if ($densiometria['rango'] == 'Normal') {
-                                                  echo 'checked="true"';
-                                              }
-                                              ?>><p>Normal</p></label>
+                                    if ($densiometria['rango'] == 'Normal') {
+                                        echo 'checked="true"';
+                                    }
+                                    ?>><p>Normal</p></label>
                             </div>
 
                             <div class="checkbox text-center">
                                 <label><input type="radio" name="rango" value="Dentro del rango" <?php
-                                              if ($densiometria['rango'] == 'Dentro del rango') {
-                                                  echo 'checked="true"';
-                                              }
-                                              ?>><p>Dentro del Rango</p></label>
+                                    if ($densiometria['rango'] == 'Dentro del rango') {
+                                        echo 'checked="true"';
+                                    }
+                                    ?>><p>Dentro del Rango</p></label>
                             </div>
 
                             <div class="checkbox text-center">
                                 <label><input type="radio" name="rango" value="Fuera del rango" <?php
-                                              if ($densiometria['rango'] == 'Fuera del rango') {
-                                                  echo 'checked="true"';
-                                              }
-                                              ?>><p>Fuera del Rango</p></label>
+                                    if ($densiometria['rango'] == 'Fuera del rango') {
+                                        echo 'checked="true"';
+                                    }
+                                    ?>><p>Fuera del Rango</p></label>
                             </div>
 
 
 
                         </div>
                         <input type="hidden" name="Rango" id="Rango"/>
-                        
+
                         <div class="form-group col-5 mb-3">
                             <label for="Apellido">Observaciones</label>
                             <input type="text" name="obsdensiometria" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="Escriba las observaciones" <?php echo 'value="' . $densiometria['observacion'] . '"'; ?>>
@@ -370,40 +368,40 @@
 
                         <h2 class="mb-4 mt-4 ml-3">Esquema de Vacunación</h2>
                         <?php
-                            $in=0;
-                            $query = "SELECT * FROM esquemavacunacion where id=$id";
-                            $resultado = $con->query($query);
-                            foreach ($resultado as $rows) {
-                                $in++;
-                                echo '<div class="form-group col-2">
+                        $in = 0;
+                        $query = "SELECT * FROM esquemavacunacion where id=$id";
+                        $resultado = $con->query($query);
+                        foreach ($resultado as $rows) {
+                            $in++;
+                            echo '<div class="form-group col-2">
                                                     <label for="Apellido">Vacuna</label>
-                                                    <input type="text" name="vacuna_'.$in.'" value = "'.$rows['vacuna'].'"  id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                    <input type="text" name="vacuna_' . $in . '" value = "' . $rows['vacuna'] . '"  id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>
                                                 <div class="form-group col-3">
                                                     <label for="Apellido">Enfermedad que protege</label>
-                                                    <input type="text" name="enfermedad_'.$in.'" value = "'.$rows['enfermedad_proteje'].'" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                                                    <input type="text" name="enfermedad_' . $in . '" value = "' . $rows['enfermedad_proteje'] . '" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>
                                                     <div class="form-group col-3">
                                                         <label for="Apellido">Fecha proxima dosis</label>
-                                                        <input type="text" name="fecha_'.$in.'" id="nombre" value = "'.$rows['fecha_dosis'].'" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                        <input type="text" name="fecha_' . $in . '" id="nombre" value = "' . $rows['fecha_dosis'] . '" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>
                                                 <div class="form-group col-2">
                                                     <label for="Apellido">Frencuencia</label>
-                                                    <input type="text" name="frecuencia_'.$in.'" id="nombre" value = "'.$rows['frecuencia'].'" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
+                                                    <input type="text" name="frecuencia_' . $in . '" id="nombre" value = "' . $rows['frecuencia'] . '" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>
                                                 <div class="form-group col-2">
                                                     <label for="Apellido">Dosis</label>
-                                                    <input type="text" name="dosis_'.$in.'" id="nombre" value = "'.$rows['dosis'].'" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
+                                                    <input type="text" name="dosis_' . $in . '" id="nombre" value = "' . $rows['dosis'] . '" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">
                                                 </div>';
-                            }
-                            echo '<input type="hidden" name="Numero" id="Numero" value="'.($in).'">';
+                        }
+                        echo '<input type="hidden" name="Numero" id="Numero" value="' . ($in) . '">';
                         ?>
                         <script type="text/javascript">
                             a = document.getElementById('Numero').value;
-                            function addVacuna(obj){
-                            a++;
-                            var div = document.createElement('div');
-                            div.innerHTML = '<div class="form-group col-2">\n\
+                            function addVacuna(obj) {
+                                a++;
+                                var div = document.createElement('div');
+                                div.innerHTML = '<div class="form-group col-2">\n\
                                                     <label for="Apellido">Vacuna</label>\n\
                                                     <input type="text" name="vacuna_' + a + '" id="nombre" class="form-control d-block form-control-lg " aria-describedby="ayuda-nombre" placeholder="">\n\
                                                 </div>\n\
@@ -423,36 +421,43 @@
                                                     <label for="Apellido">Dosis</label>\n\
                                                     <input type="text" name="dosis_' + a + '" id="nombre" class="form-control d-block form-control-lg" aria-describedby="ayuda-nombre" placeholder="">\n\
                                                 </div>';
-                            document.getElementById('vacunas').appendChild(div);
-                            document.getElementById('Numero').value=a;
+                                document.getElementById('vacunas').appendChild(div);
+                                document.getElementById('Numero').value = a;
                             }
                         </script>
-                        
+
                         <div id="vacunas"></div>
                         <input class="btn btn-light order-md-1 mt-5 ml-3"  type="button" name="agregar" id="add_vacuna" value="Agregar Vacuna" onclick="addVacuna(this)"/>
 
 
 
+                    </div>
+
+
+
                 </div>
-
-
-
-            </div>
         </form>
-        </section>
+    </section>
 
 
-        <!-- Carga de "Jquery" -->
-        <script src="js/jquery-3.3.1.min.js"></script>
+    <!-- Carga de "Jquery" -->
+    <script src="js/jquery-3.3.1.min.js"></script>
 
-        <!-- Carga de "Popper" -->
-        <script src="js/popper.min.js"></script>
+    <!-- Carga de "Popper" -->
+    <script src="js/popper.min.js"></script>
 
-        <!-- Carga de "Bootstrap" -->
-        <script src="js/bootstrap.min.js"></script>
+    <!-- Carga de "Bootstrap" -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <?php
+    if (isset($_GET['mensaje']))
+        echo '
+        <script>
+        alert(' . $_GET['mensaje'] . ');
+        </script>';
+    ?>
 
 
-
-    </body>
+</body>
 
 </html>
